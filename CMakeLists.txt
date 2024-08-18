@@ -113,41 +113,5 @@ foreach(lib ${TREELITE_TARGETS})
   set_output_directory(${lib} ${PROJECT_BINARY_DIR})
 endforeach()
 
-# Export install targets
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-  # Include CPack only if the current project is top level.
-  include(CPack)
-endif()
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-set(INSTALL_TARGETS ${TREELITE_TARGETS} objtreelite rapidjson mdspan)
-if(NOT nlohmann_json_FOUND)  # Fetched nlohmann/json via FetchContent
-  list(APPEND INSTALL_TARGETS nlohmann_json)
-endif()
-install(TARGETS ${INSTALL_TARGETS}
-    EXPORT TreeliteTargets
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    INCLUDES DESTINATION include)
-install(DIRECTORY include/treelite "${PROJECT_BINARY_DIR}/include/treelite"
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-install(EXPORT TreeliteTargets
-    FILE TreeliteTargets.cmake
-    NAMESPACE treelite::
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/treelite")
-configure_package_config_file(
-    cmake/TreeliteConfig.cmake.in
-    "${PROJECT_BINARY_DIR}/cmake/TreeliteConfig.cmake"
-    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/treelite")
-write_basic_package_version_file(
-    "${PROJECT_BINARY_DIR}/cmake/TreeliteConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion)
-install(FILES
-    "${PROJECT_BINARY_DIR}/cmake/TreeliteConfig.cmake"
-    "${PROJECT_BINARY_DIR}/cmake/TreeliteConfigVersion.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/treelite")
-
 write_version()
 set_default_configuration_release()
