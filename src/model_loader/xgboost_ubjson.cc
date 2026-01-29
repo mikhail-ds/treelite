@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include <treelite/detail/file_utils.h>
 #include <treelite/model_loader.h>
@@ -37,9 +38,11 @@ std::unique_ptr<treelite::Model> LoadXGBoostModelUBJSON(
 }
 
 std::unique_ptr<treelite::Model> LoadXGBoostModelFromUBJSONString(
-    std::basic_string_view<std::uint8_t> ubjson_str, std::string const& config_json) {
+    std::uint8_t const* ubjson_str, std::size_t length, std::string const& config_json) {
   nlohmann::json parsed_config = nlohmann::json::parse(config_json);
-  return ParseStream(ubjson_str, parsed_config);
+  // Cast to char* and use string_view - nlohmann_json has input adapters for string_view
+  std::string_view sv(reinterpret_cast<char const*>(ubjson_str), length);
+  return ParseStream(sv, parsed_config);
 }
 
 }  // namespace treelite::model_loader

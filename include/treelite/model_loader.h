@@ -8,6 +8,7 @@
 #define TREELITE_MODEL_LOADER_H_
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -66,12 +67,13 @@ std::unique_ptr<treelite::Model> LoadXGBoostModelUBJSON(
 /*!
  * \brief Load an XGBoost model from a UBJSON string
  * \param ubjson_str UBJSON byte sequence
+ * \param length Length of the UBJSON byte sequence
  * \param config_json JSON string consisting of key-value pairs; used for configuring the model
  *                    parser
  * \return Loaded model
  */
 std::unique_ptr<treelite::Model> LoadXGBoostModelFromUBJSONString(
-    std::basic_string_view<std::uint8_t> ubjson_str, std::string const& config_json);
+    std::uint8_t const* ubjson_str, std::size_t length, std::string const& config_json);
 
 /*!
  * \brief Inspect the first few bytes of an XGBoost model and heuristically determine whether
